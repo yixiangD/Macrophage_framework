@@ -40,16 +40,15 @@ data <- subset(data, cells = colnames(data)[!na_cells])
 
 data <- Seurat::FindVariableFeatures(data)
 data <- Seurat::ScaleData(data)
-data <- Seurat::RunPCA(data, features = VariableFeatures(object = data))
+data <- Seurat::RunPCA(data, features = Seurat::VariableFeatures(object = data))
 data <- Seurat::RunUMAP(data, dims = 1:10)
 
 rd <- Seurat::Embeddings(object = data, reduction = "umap")[, 1:2]
 
-## stopped here
 lin <- slingshot::getLineages(rd, cl, start.clus = "4") # retrieve lineage breaking points
 lin <- slingshot::getCurves(lin) # calculate curves and pseudotime
 
-data@meta.data <- cbind(data@meta.data, slingPseudotime(lin)) # Add pseudotime calculation to Seurat object
+data@meta.data <- cbind(data@meta.data, slingshot::slingPseudotime(lin)) # Add pseudotime calculation to Seurat object
 
 # ============= 2. Gene expression over pseudotime ============= ####
 require(gam)
@@ -83,10 +82,12 @@ for (i in sets) {
 }
 
 #  ============= 3. Benchmarking label transfer parameters ============= ####
+
+## stopped here
 n1 # Fully processed dataset of mixed macrophages and other immune cells
 data # Reference fully processed Seurat object
 
-n1 <- AddModuleScore(
+n1 <- Seurat::AddModuleScore(
   object = n1, name = "Mac",
   features = list("Mac" = c(
     "H2-Ab1", "Lyz2",
