@@ -1,3 +1,4 @@
 data/*/
 data/*.tar
 .DS_Store
+.Rhistory
