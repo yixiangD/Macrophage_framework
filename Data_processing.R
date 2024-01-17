@@ -20,35 +20,36 @@
 
 # ============= 1. Pseudotime calculation ============= ####
 library(slingshot)
+library(Seurat)
 file_path <- "/Users/yd973/Documents/research/Macrophage_framework/data/GSE106472/GSM2840135"
+remote.path <- "/Users/yd973/Dropbox (Partners HealthCare)/macrophage/data"
+local.path <- "/Users/yd973/Documents/research/Macrophage_framework/data"
+david.data <- "data.rds"
 
-# Reading the gzipped file directly
-scRNA_seq_data <- Seurat::Read10X(data.dir = file_path)
-data <- Seurat::CreateSeuratObject(counts = scRNA_seq_data, project = "test")
-
+data <- readRDS(paste(remote.path, david.data, sep = "/"))
 data # Reference fully processed Seurat object
 # this takes the dimensionality reduction and clustering as an input
 
-cl <- Seurat::Idents(data)
+cl <- Idents(data)
 
-data <- Seurat::NormalizeData(data)
+data <- NormalizeData(data)
 # Identifying cells with NA values
 na_cells <- colSums(is.na(data@assays$RNA@data)) > 0
 
 # Removing cells with NA values
 data <- subset(data, cells = colnames(data)[!na_cells])
 
-data <- Seurat::FindVariableFeatures(data)
-data <- Seurat::ScaleData(data)
-data <- Seurat::RunPCA(data, features = Seurat::VariableFeatures(object = data))
-data <- Seurat::RunUMAP(data, dims = 1:10)
+data <- FindVariableFeatures(data)
+data <- ScaleData(data)
+data <- RunPCA(data, features = VariableFeatures(object = data))
+data <- RunUMAP(data, dims = 1:10)
 
-rd <- Seurat::Embeddings(object = data, reduction = "umap")[, 1:2]
+rd <- Embeddings(object = data, reduction = "umap")[, 1:2]
 
-lin <- slingshot::getLineages(rd, cl, start.clus = "4") # retrieve lineage breaking points
-lin <- slingshot::getCurves(lin) # calculate curves and pseudotime
+lin <- getLineages(rd, cl, start.clus = "4") # retrieve lineage breaking points
+lin <- getCurves(lin) # calculate curves and pseudotime
 
-data@meta.data <- cbind(data@meta.data, slingshot::slingPseudotime(lin)) # Add pseudotime calculation to Seurat object
+data@meta.data <- cbind(data@meta.data, slingPseudotime(lin)) # Add pseudotime calculation to Seurat object
 
 # ============= 2. Gene expression over pseudotime ============= ####
 require(gam)
@@ -83,11 +84,11 @@ for (i in sets) {
 
 #  ============= 3. Benchmarking label transfer parameters ============= ####
 
-## stopped here
+## stopped here 01.17
 n1 # Fully processed dataset of mixed macrophages and other immune cells
-data # Reference fully processed Seurat object
+# data # Reference fully processed Seurat object
 
-n1 <- Seurat::AddModuleScore(
+n1 <- AddModuleScore(
   object = n1, name = "Mac",
   features = list("Mac" = c(
     "H2-Ab1", "Lyz2",
