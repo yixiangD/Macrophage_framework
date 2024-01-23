@@ -22,26 +22,19 @@ for p in path:
                     tarpath = os.path.join(rr, f)
                     subprocess.call(f"gzip -dv {tarpath}", shell=True)
                 else:
-                    # read count tables
+                    # TODO read count tables
                     pass
             else:
-                # read dge files
-                temp = f.replace(".dge.txt.gz", "")
-                # print(temp.split("_", 1)[1])
+                # TODO read dge files
+                pass
         else:
             # standard 10x data
             # default: barcodes, genes, matrix
             # need to replace "features" to "genes"
-            data10x.append([p] + f.rsplit("_", 1))
+            data10x.append([p, f])
+
 import pandas as pd
-df10x = pd.DataFrame(data10x, columns=["folder", "group", "file"])
-df10x[["sample", "type"]] = df10x["group"].str.split("_", n = 1, expand=True)
-print(df10x)
-
-df10x_count = df10x.groupby("folder")["group"].agg(list).reset_index()
-df10x_count["count"] = df10x_count ["group"].apply(len)
-#print(df10x_count)
-
-df10x_count = df10x.groupby(["folder", "sample"])["type"].agg(list).reset_index()
-df10x_count["count"] = df10x_count ["type"].apply(len)
-print(df10x_count)
+df10x = pd.DataFrame(data10x, columns=["folder", "file"])
+df10x[["sample", "type"]] = df10x["file"].str.rsplit("_", n = 1, expand=True)
+# df10x[["sample", "type"]] = df10x["group"].str.split("_", n = 1, expand=True)
+df10x.to_excel("./data/10x.xlsx", index=False)
