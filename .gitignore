@@ -1,5 +1,6 @@
 data/*/
 data/~*.xlsx
+data/secondary
 data/*.tar
 .DS_Store
 .Rhistory
