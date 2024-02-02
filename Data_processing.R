@@ -79,7 +79,7 @@ for (i in sets) {
 }
 
 for (i in sets) {
-  pval[[i]] <- p.adjust(pval[[i]], method = "fdr") # Correct p values for multiple comparissons
+  pval[[i]] <- p.adjust(pval[[i]], method = "fdr") # Correct p values for multiple comparisons
 }
 
 #  ============= 3. Benchmarking label transfer parameters ============= ####

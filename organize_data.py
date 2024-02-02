@@ -37,4 +37,4 @@ import pandas as pd
 df10x = pd.DataFrame(data10x, columns=["folder", "file"])
 df10x[["sample", "type"]] = df10x["file"].str.rsplit("_", n = 1, expand=True)
 # df10x[["sample", "type"]] = df10x["group"].str.split("_", n = 1, expand=True)
-df10x.to_excel("./data/10x.xlsx", index=False)
+# df10x.to_excel("./data/10x.xlsx", index=False)

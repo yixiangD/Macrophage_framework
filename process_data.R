@@ -10,7 +10,7 @@ data.10x$type <- gsub(".tsv.gz", "", data.10x$type)
 
 all10x.list <- list()
 for (f in unique(data.10x$folder)) {
-  data.subset <- data.10x[data.10x$folder == f,]
+  data.subset <- data.10x[data.10x$folder == f, ]
   seurat.list <- list()
   for (samp in unique(data.subset$sample)) {
     data.samp <- data.subset[data.subset$sample == samp, ]
