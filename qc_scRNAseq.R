@@ -1,9 +1,37 @@
+remote.path <- "/Users/yd973/Dropbox (Partners HealthCare)/macrophage/data"
+local.path <- "/Users/yd973/Documents/research/Macrophage_framework/data"
+
+# Load necessary libraries
+library(Seurat) # or another scRNA-seq analysis package
+
+data.10x <- readxl::read_excel(paste(local.path, "secondary/10x.xlsx", sep = "/"))
+data.10x$type <- gsub(".mtx.gz", "", data.10x$type)
+data.10x$type <- gsub(".tsv.gz", "", data.10x$type)
+
+folder <- data.10x$folder[1]
+# samp <- data.10x$sample[1] # dark
+samp <- data.10x$sample[1] # light
+example.path <- paste(local.path, folder, sep = "/")
+
+mtx <- paste(example.path, data.10x$file[grepl("matrix", data.10x$file) & grepl(samp, data.10x$file)], sep = "/")
+cells <- paste(example.path, data.10x$file[grepl("barcode", data.10x$file) & grepl(samp, data.10x$file)], sep = "/")
+features <- paste(example.path, data.10x$file[grepl("feature|gene", data.10x$file) & grepl(samp, data.10x$file)], sep = "/")
+# reading
+counts <- ReadMtx(mtx = mtx, cells = cells, features = features)
+seurat_object <- CreateSeuratObject(counts = counts, project = samp)
+
 # QC-------
 # Filter out low-quality cells
 # This will involve setting thresholds for metrics like number of detected genes, percentage of mitochondrial genes, etc.
 
-mito_genes <- grep(pattern = "^MT-", rownames(seurat_object@assays$RNA@counts), value = TRUE)
-seurat_object[["percent.mito"]] <- PercentageFeatureSet(seurat_object, features = mito_genes)
+seurat_object[["percent.mito"]] <- PercentageFeatureSet(seurat_object, pattern = "^MT-")
+library(ggplot2)
+fig <- VlnPlot(seurat_object, features = c("nFeature_RNA", "nCount_RNA", "percent.mito"), ncol = 3)
+print(fig)
+
+plt1 <- FeatureScatter(seurat_object, feature1 = "nCount_RNA", feature2 = "percent.mito")
+plt2 <- FeatureScatter(seurat_object, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
+print(plt1 + plt2)
 
 # Quality control - filtering cells
 # lower_bound: 200 to 500 genes
@@ -15,7 +43,7 @@ seurat_object[["percent.mito"]] <- PercentageFeatureSet(seurat_object, features 
 # mito_threshold: 5% to 20%
 lower_bound <- 200
 upper_bound <- 2500
-mito_threshold <- 0.05
+mito_threshold <- 5
 
 qc_object <- subset(seurat_object, subset = nFeature_RNA > lower_bound & nFeature_RNA < upper_bound & percent.mito < mito_threshold)
 
