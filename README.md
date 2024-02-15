@@ -5,6 +5,13 @@ An interactive shiny application to visualize critical aspects of the data in th
 
 This repository contains all relevant code to reproduce the findings and figures in the associated publication. Please cite us!
 
-## Learning R
+## Learning scRNA-seq using R
 [Tutorial 1](https://nbisweden.github.io/excelerate-scRNAseq/session-qc/Quality_control.html)
+
+### Quality control
+1. filtering cells with lower and upper bounds on RNA expression and mitochondria expression
+
+
+### Integrate across conditions within the same tissue
+[Seurat batch integration](https://satijalab.org/seurat/articles/integration_introduction.html)
 
