@@ -42,15 +42,47 @@ for (folder in test.folder) {
     counts <- ReadMtx(mtx = mtx, cells = cells, features = features)
     seurat_object <- CreateSeuratObject(counts = counts, project = samp)
     seurat_object$condition <- unique(df.sub$case[grepl(samp, df.sub$file)])
+    seurat_object <- NormalizeData(seurat_object) %>%
+      FindVariableFeatures()
+
     obj.list <- c(obj.list, seurat_object)
   }
   obj.final <- merge(obj.list[1][[1]], obj.list[2][[1]])
-  obj.final <- NormalizeData(obj.final) %>%
-    FindVariableFeatures() %>%
+  obj.final <- obj.final %>%
     ScaleData() %>%
     RunPCA(verbose = FALSE)
   obj.final <- RunHarmony(obj.final, group.by.vars = "condition")
   obj.final <- RunUMAP(obj.final, reduction = "harmony", dims = 1:30)
   obj.final <- FindNeighbors(obj.final, reduction = "harmony", dims = 1:30) %>% FindClusters()
-  DimPlot(obj.final, group.by = c("condition", "ident", "seurat_annotations"), ncol = 3)
+  # DimPlot(obj.final, group.by = c("condition", "ident", "seurat_annotations"), ncol = 3)
+  DimPlot(obj.final, reduction = "umap", split.by = "condition")
+  obj.final <- JoinLayers(obj.final)
+  obj.final <- FindClusters(obj.final, resolution = 0.5)
 }
+
+# find markers----
+# manual
+# markers <- FindConservedMarkers(obj.final, ident.1 = 6, grouping.var = "condition", verbose = FALSE)
+
+library(celldex)
+library(SingleR)
+library(BiocParallel)
+
+ref <- celldex::MouseRNAseqData()
+sceObject <- as.SingleCellExperiment(obj.final)
+singleRResults <- SingleR(test = sceObject, ref = ref, labels = ref$label.main, clusters = obj.final$seurat_clusters)
+# Viewing the first few annotations
+head(singleRResults$labels)
+# Summary of predicted cell types
+table(singleRResults$labels)
+
+scores <- as.data.frame(singleRResults@listData$scores)
+
+plotScoreHeatmap(singleRResults, clusters = singleRResults$labels, fontsize.row = 9, show_colnames = T)
+
+new.cluster.ids <- singleRResults$pruned.labels
+names(new.cluster.ids) <- levels(obj.final)
+levels(obj.final)
+obj.final <- RenameIdents(obj.final, new.cluster.ids)
+
+UMAPPlot(object = obj.final, pt.size = 0.5, label = TRUE)
