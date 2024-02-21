@@ -12,6 +12,10 @@ This repository contains all relevant code to reproduce the findings and figures
 1. filtering cells with lower and upper bounds on RNA expression and mitochondria expression
 
 
-### Integrate across conditions within the same tissue
-[Seurat batch integration](https://satijalab.org/seurat/articles/integration_introduction.html)
+### Batch effect correction and integration
+- [Seurat batch integration tutorial](https://satijalab.org/seurat/articles/integration_introduction.html)
+- [Benchmark paper recommending Harmony](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1850-9)
+
+## Reference papers
+- Normalizing single-cell RNA sequencing data: challenges and opportunities, 2017 Nature Methods
 
