@@ -18,20 +18,12 @@ This repository contains all relevant code to reproduce the findings and figures
 
 
 ### Subset data to select macrophages
-- Lyve1 can potentially help identify macrophages
-- Fcgr1 (CD64) also
-Subset coordinates to the top right corner only, since bottom left it's only B cells & we dont care about them
-- Fcgr1 will be a certain Mac marker
-- Lyve1 also.
-- Monocytes dont express either.
-- however Lyve1 may be more specific to WAT macrophages... im not sure how it's gonna be in other tissues.
-- Fcgr1, on the other hand, is a pan-macrophage marker.
-- CD64 is expressed in monocytes
+Macrophage gene markers:
 
-
-
-- F4/80, CCR2, CD169, CX3CR1, CD206, CD163, Lyve1, CD9, TREM2, and MHCII are macrophage markers located on the cell membrane. (10.3389/fimmu.2023.1084636)
-- CD68, iNOS, Arg-1, and Gal-3 are macrophage markers located inside the cell. 
+- Ilya: Lyve1, Fcgr1 (CD64)
+- F4/80 (Adgre1), CD68 (Cd68) (10.3389/fimmu.2023.1084636)
+- M1: CD11b (Itgam), iNOS (Nos2), CD86 (Cd86)
+- M2: CD206 (Mrc1), Arginase-1 (Arg1), Ym1 (Chil3) and Fizz1 (Retnla)
 
 
 
