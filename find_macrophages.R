@@ -15,13 +15,12 @@ library(BiocParallel)
 
 opt.method <- "manual"
 # features/genes to plot
-feat.ilya <- c("Lyve1", "Fcgr1")
-feat.paper <- c("Adgre1")
-feat.m1 <- c("Itgam", "Nos2")
-feat.m2 <- c("Mrc1", "Arg1", "Chil3", "Retnla")
-features <- c(feat.ilya, feat.paper, feat.m1, feat.m2)
-
+feat1 <- c("Csf1r", "Cd68")
+feat2 <- c("Cd86", "Mertk", "Marco", "Aif1")
+features <- c(feat1, feat2)
 # features <- c("Adgre1", "Csf1r", "H2-Ab1", "Cd68", "Lyz2", "Itgam", "Mertk")
+# Csf1r > 1 or Cd68 > 1
+# All the other genes (include Cd86, mertk, csf1r (cd115), marco, aif1)
 
 if (opt.method != "manual") {
   ref <- celldex::MouseRNAseqData()
@@ -39,23 +38,30 @@ for (folder in test.folder) {
   # Retrieve normalized data
   normalized_data <-
     GetAssayData(obj.final, assay = "RNA", layer = "data")
-  sceObject <- as.SingleCellExperiment(obj.final)
 
   if (opt.method == "manual") {
     # opt1. manually find macrophages----
     # Check expression of typical macrophage function genes
     DotPlot(obj.final, features = features)
 
-    feat.avail <- features[features %in% rownames(obj.final)]
     # Normalize data if not already normalized
-
-    expression_above_threshold <- normalized_data[feat.avail, ] > 1
+    # Step 1----
+    expression_above_threshold <- normalized_data[feat1, ] > 0
     cells_to_keep <- apply(expression_above_threshold, 2, any)
 
     # Subset the Seurat object to include only cells where all specified genes are above the threshold
-    obj.manual <- obj.final[, cells_to_keep]
-    VlnPlot(obj.manual, features = feat.avail)
-    DotPlot(obj.manual, features = feat.avail)
+    obj.med <- obj.final[, cells_to_keep]
+
+    # Step 2----
+    normalized_data <-
+      GetAssayData(obj.med, assay = "RNA", layer = "data")
+    expression_above_threshold <- normalized_data[feat2, ] > 0
+    cells_to_keep <- apply(expression_above_threshold, 2, any)
+
+    # Subset the Seurat object to include only cells where all specified genes are above the threshold
+    obj.manual <- obj.med[, cells_to_keep]
+    VlnPlot(obj.manual, features = features)
+    DotPlot(obj.manual, features = features)
     # export to temporary data
     fname.macro <-
       paste(saved.dir,
@@ -65,6 +71,8 @@ for (folder in test.folder) {
     saveRDS(obj.manual, file = fname.macro)
   } else {
     # opt2. automate finding macrophages----
+
+    sceObject <- as.SingleCellExperiment(obj.final)
     singleRResults <-
       SingleR(
         test = sceObject,
