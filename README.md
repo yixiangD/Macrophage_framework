@@ -29,6 +29,10 @@ Macrophage gene markers:
 ### MoMac
 ```curl -o ./data/2021_MoMac_VERSE.RDS "https://nextcloud.gustaveroussy.fr/s/24CgwGbRekw8Xij/download/2021_MoMac_VERSE.RDS"```
 
+## Cluster computing
+### Eristwo
+```srun --pty -p your_partition_name --mem=16G -n 4 --time=01:00:00 /bin/bash```
+
 ## Reference papers
 - Normalizing single-cell RNA sequencing data: challenges and opportunities, 2017 Nature Methods
 
