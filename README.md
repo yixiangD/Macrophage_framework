@@ -25,10 +25,13 @@ Macrophage gene markers:
 - M1: CD11b (Itgam), iNOS (Nos2), CD86 (Cd86)
 - M2: CD206 (Mrc1), Arginase-1 (Arg1), Ym1 (Chil3) and Fizz1 (Retnla)
 
-
+## Data prep
+### MoMac
+```curl -o ./data/2021_MoMac_VERSE.RDS "https://nextcloud.gustaveroussy.fr/s/24CgwGbRekw8Xij/download/2021_MoMac_VERSE.RDS"```
 
 ## Reference papers
 - Normalizing single-cell RNA sequencing data: challenges and opportunities, 2017 Nature Methods
+
 ## Misc Reference
 - [Using R with Anaconda](https://docs.anaconda.com/free/working-with-conda/packages/using-r-language/)
 - [Satori R](https://mit-satori.github.io/satori-R.html#running-r-in-a-container)
