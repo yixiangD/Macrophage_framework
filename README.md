@@ -29,4 +29,6 @@ Macrophage gene markers:
 
 ## Reference papers
 - Normalizing single-cell RNA sequencing data: challenges and opportunities, 2017 Nature Methods
-
+## Misc Reference
+- [Using R with Anaconda](https://docs.anaconda.com/free/working-with-conda/packages/using-r-language/)
+- [Satori R](https://mit-satori.github.io/satori-R.html#running-r-in-a-container)
