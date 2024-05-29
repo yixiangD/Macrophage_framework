@@ -24,12 +24,16 @@ health.data <- subset(g.data, subset = Status == "Healthy")
 print(unique(health.data$Tissue))
 sel.tissue <- c("Lung", "Kidney", "Skin", "Breast")
 # sel.tissue <- c("Breast","Liver","Lung","Spleen","Kidney","Pancreas")
-obj.sel <- subset(health.data, subset = Tissue %in% sel.tissue)
-print(unique(obj.sel$Tissue))
+obj.tissue <- subset(health.data, subset = Tissue %in% sel.tissue)
+print(unique(obj.tissue$Tissue))
 # rm(g.data)
 # rm(health.data)
 # normalize/scale data
 
+cells.keep <- grepl("Macrophage", obj.tissue$Clusters) & grepl("-2|-3|-6|-16", obj.tissue$Clusters)
+obj.sel <- subset(obj.tissue, cells = Cells(obj.tissue)[cells.keep])
+print(unique(obj.sel$Clusters))
+exit()
 obj.sel <- Seurat::ScaleData(object = obj.sel, features = rownames(obj.sel))
 obj.sel <-
   Seurat::RunPCA(obj.sel, features = Seurat::VariableFeatures(object = obj.sel))
