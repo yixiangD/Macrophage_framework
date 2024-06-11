@@ -6,3 +6,7 @@ data/*.h5
 data/*.RDS
 .DS_Store
 .Rhistory
+*.err
+*.out
+*.sh
+
