@@ -32,8 +32,9 @@ print(unique(obj.tissue$Tissue))
 
 cells.keep <- grepl("Macrophage", obj.tissue$Clusters) & grepl("-2|-3|-6|-16", obj.tissue$Clusters)
 obj.sel <- subset(obj.tissue, cells = Cells(obj.tissue)[cells.keep])
+print("Selected cluster...")
 print(unique(obj.sel$Clusters))
-exit()
+# exit()
 obj.sel <- Seurat::ScaleData(object = obj.sel, features = rownames(obj.sel))
 obj.sel <-
   Seurat::RunPCA(obj.sel, features = Seurat::VariableFeatures(object = obj.sel))
@@ -45,23 +46,22 @@ head(obj.sel@meta.data)
 
 # identify differentially expressed genes----
 table(obj.sel$Tissue)
-table(obj.sel$Clusters)
+#table(obj.sel$Clusters)
 # Set 'condition' as the active identity
 Idents(obj.sel) <- obj.sel$Tissue
 
 # Run differential expression analysis
 id1 <- "Lung"
-id2 <- "Liver"
 for (tis in sel.tissue) {
-  if (tis != "Lung") {
+  if (tis != id1) {
     de_results <-
       Seurat::FindMarkers(
         obj.sel,
-        ident.1 = "Lung",
-        ident.2 = id2,
+        ident.1 = id1,
+        ident.2 = tis,
         min.pct = 0.1,
         logfc.threshold = 0.25,
-        test.use = "wilcox"
+        test.use = "DESeq2"
       )
     # View top differentially expressed genes
     head(de_results)
@@ -90,6 +90,6 @@ for (tis in sel.tissue) {
       xlab("log2 Fold Change") +
       ylab("-log10 p-value")
 
-    ggsave(paste0("./output/", id1, "_", id2, ".pdf"), fig)
+    ggsave(paste0("./output/", id1, "_", tis, ".pdf"), fig)
   }
 }
