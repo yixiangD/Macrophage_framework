@@ -31,7 +31,7 @@ Macrophage gene markers:
 
 ## Computing using clusters
 ### Eristwo
-```srun --pty -p normal --mem=16G -n 4 --time=01:00:00 /bin/bash```
+```srun --pty -p normal --mem=32G -n 4 --time=01:00:00 /bin/bash```
 
 ## Reference papers
 - Normalizing single-cell RNA sequencing data: challenges and opportunities, 2017 Nature Methods
