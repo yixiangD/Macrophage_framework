@@ -1,4 +1,6 @@
 library(Seurat)
+library(ggplot2)
+
 memory.limit(size = 8000)
 fname <- "./data/2021_MoMac_VERSE.RDS"
 print("Reading...")
@@ -7,9 +9,7 @@ print("End Reading...")
 
 print("Inspect whole data...")
 print(unique(g.data$Tissue))
-feat1 <- c("S100A8", "S100A9")
-feat2 <- c("C1QA", "C1QB", "CD68")
-features <- c(feat1, feat2)
+
 # genes <- rownames(g.data)
 # Seurat::DotPlot(g.data, features = features)
 
@@ -71,7 +71,7 @@ for (tis in sel.tissue) {
     df$log10_p_val <- -log10(df$p_val)
 
     # Create the volcano plot
-    library(ggplot2)
+
     log2FC_threshold <- 1
     p_val_threshold <- 0.05
 
